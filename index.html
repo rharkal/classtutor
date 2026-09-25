@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>ClassTutor</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Offline Banner -->
+    <div id="offline-banner" class="offline-banner hidden">
+        ⚠️ You are offline. Please connect to the internet to use ClassTutor.
+    </div>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="app-title-container">
+            <h1 class="app-title">📚 ClassTutor</h1>
+            <span class="header-badge">CBSE Std 5</span>
+        </div>
+        <div class="header-actions">
+            <button id="settings-btn" class="icon-btn" title="Settings" aria-label="Settings">⚙️</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="app-main">
+        <!-- Left Panel: Conversation -->
+        <section class="chat-panel" id="chat-panel">
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="chat-messages">
+                <div class="welcome-message">
+                    <div class="welcome-emoji">👋</div>
+                    <h2>Hi there!</h2>
+                    <p>I'm your ClassTutor. Tap the microphone and ask me anything from your textbooks!</p>
+                    <p class="welcome-hint">You can also type your question below.</p>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="chat-input-area">
+                <!-- Audio Controls (shown during playback) -->
+                <div id="audio-controls" class="audio-controls hidden">
+                    <button id="stop-btn" class="control-btn stop-btn" title="Stop" aria-label="Stop">⏹️ Stop</button>
+                    <button id="repeat-btn" class="control-btn repeat-btn" title="Repeat" aria-label="Repeat">🔁 Repeat</button>
+                    <button id="slower-btn" class="control-btn slower-btn" title="Slower" aria-label="Slower">🐢 Slower</button>
+                </div>
+
+                <!-- Text Input + Mic -->
+                <div class="input-row">
+                    <input
+                        type="text"
+                        id="question-input"
+                        class="question-input"
+                        placeholder="Type your question here..."
+                        autocomplete="off"
+                        aria-label="Type your question"
+                    >
+                    <button id="send-btn" class="send-btn" title="Send" aria-label="Send question">
+                        ➤
+                    </button>
+                    <button id="mic-btn" class="mic-btn" title="Tap to speak" aria-label="Tap to speak">
+                        🎤
+                    </button>
+                </div>
+
+                <!-- Mic Status -->
+                <div id="mic-status" class="mic-status hidden">
+                    <span class="mic-dot"></span>
+                    <span>Listening...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Panel: PDF Viewer -->
+        <section class="pdf-panel" id="pdf-panel">
+            <div class="pdf-header">
+                <span id="pdf-title" class="pdf-title">No document open</span>
+                <div class="pdf-nav">
+                    <button id="pdf-prev" class="pdf-nav-btn" disabled aria-label="Previous page">◀</button>
+                    <span id="pdf-page-info" class="pdf-page-info">—</span>
+                    <button id="pdf-next" class="pdf-nav-btn" disabled aria-label="Next page">▶</button>
+                </div>
+                <button id="pdf-close" class="icon-btn" title="Close PDF" aria-label="Close PDF">✕</button>
+            </div>
+            <div class="pdf-viewport" id="pdf-viewport">
+                <div class="pdf-placeholder">
+                    <div class="pdf-placeholder-icon">📄</div>
+                    <p>Tap a source link in the chat to open the textbook page here.</p>
+                </div>
+                <canvas id="pdf-canvas"></canvas>
+                <div id="pdf-text-layer" class="pdf-text-layer"></div>
+                <div id="pdf-highlight-layer" class="pdf-highlight-layer"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Settings Modal -->
+    <dialog id="settings-modal" class="settings-modal">
+        <div class="modal-content">
+            <h2>⚙️ Settings</h2>
+            <form id="settings-form">
+                <label class="setting-row">
+                    <span class="setting-label">Speech Speed</span>
+                    <input type="range" id="speech-rate" min="0.5" max="1.5" step="0.1" value="0.8">
+                    <span id="speech-rate-value" class="setting-value">0.8×</span>
+                </label>
+                <label class="setting-row">
+                    <span class="setting-label">Gemini API Key</span>
+                    <input type="password" id="api-key-input" class="setting-text-input" placeholder="AIzaSy... (Saved locally on device)">
+                </label>
+                <label class="setting-row">
+                    <span class="setting-label">Model Name (Lite)</span>
+                    <input type="text" id="model-name" value="gemini-2.5-flash-lite" class="setting-text-input">
+                </label>
+                <div class="modal-actions">
+                    <button type="button" id="settings-save" class="btn btn-primary">Save</button>
+                    <button type="button" id="settings-cancel" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="js/curriculum-data.js"></script>
+    <script src="js/api-client.js"></script>
+    <script src="js/speech-input.js"></script>
+    <script src="js/speech-output.js"></script>
+    <script src="js/pdf-viewer.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ClassTutor — Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="admin-body">
+    <!-- Header -->
+    <header class="app-header admin-header">
+        <h1 class="app-title">📚 ClassTutor — Admin</h1>
+        <a href="index.html" class="btn btn-secondary btn-small">← Back to Student Page</a>
+    </header>
+
+    <!-- Login Gate -->
+    <section id="login-section" class="admin-section">
+        <div class="admin-card">
+            <h2>🔒 Admin Login</h2>
+            <p>Enter the admin password to manage ClassTutor.</p>
+            <div class="input-group">
+                <input type="password" id="admin-password" placeholder="Admin password" class="setting-text-input" autocomplete="current-password">
+                <button id="login-btn" class="btn btn-primary">Login</button>
+            </div>
+            <p id="login-error" class="error-text hidden">Wrong password. Try again.</p>
+        </div>
+    </section>
+
+    <!-- Admin Dashboard (hidden until login) -->
+    <section id="admin-dashboard" class="admin-section hidden">
+
+        <!-- Sync PDFs from Google Drive -->
+        <div class="admin-card">
+            <h2>📁 Sync PDFs from Google Drive</h2>
+            <p>Paste your Google Drive folder link below. Make sure the folder is set to "Anyone with the link can view".</p>
+            <div class="input-group">
+                <input type="url" id="drive-url" placeholder="https://drive.google.com/drive/folders/..." class="setting-text-input drive-input">
+                <button id="sync-btn" class="btn btn-primary">🔄 Sync PDFs</button>
+            </div>
+            <div id="sync-progress" class="progress-area hidden">
+                <div class="progress-bar">
+                    <div id="sync-bar" class="progress-fill" style="width: 0%"></div>
+                </div>
+                <p id="sync-status" class="progress-text">Starting sync...</p>
+            </div>
+        </div>
+
+        <!-- Current Files -->
+        <div class="admin-card">
+            <h2>📄 Indexed Files</h2>
+            <p>These PDFs are currently indexed and searchable by students.</p>
+            <div id="files-list" class="files-list">
+                <p class="muted-text">Loading files...</p>
+            </div>
+            <button id="refresh-files-btn" class="btn btn-secondary btn-small">🔄 Refresh List</button>
+        </div>
+
+        <!-- Backend Settings -->
+        <div class="admin-card">
+            <h2>⚙️ Backend Settings</h2>
+            <div class="setting-row">
+                <span class="setting-label">API Endpoint</span>
+                <input type="url" id="api-endpoint" class="setting-text-input" placeholder="https://classtutor-api.YOUR_SUBDOMAIN.workers.dev">
+            </div>
+            <div class="setting-row">
+                <span class="setting-label">Gemini Model</span>
+                <input type="text" id="admin-model-name" class="setting-text-input" value="gemini-3.8-flash">
+            </div>
+            <button id="save-settings-btn" class="btn btn-primary btn-small">Save Settings</button>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="admin-card danger-card">
+            <h2>⚠️ Danger Zone</h2>
+            <p>These actions cannot be undone.</p>
+            <button id="reindex-btn" class="btn btn-danger btn-small">🔄 Re-index All Files</button>
+            <button id="clear-btn" class="btn btn-danger btn-small">🗑️ Clear All Data</button>
+        </div>
+    </section>
+
+    <script src="js/api-client.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
