@@ -149,19 +149,24 @@ CRITICAL RULES:
             });
         }
 
+        const isChapterOverview = matches.isChapterOverview || /(topic|topics|question|questions|summary|overview|explain chapter|what does.*teach)/i.test(q);
+        const dynamicInstruction = isChapterOverview
+            ? `Instructions: You are Rishit's friendly CBSE Standard 5 tutor. Synthesize and list the topics, concepts, or questions found across the chapter pages provided above clearly and warmly using bullet points or numbers. Mention the Subject and Chapter name. If the chapter or subject is completely absent from the syllabus, reply EXACTLY: "This is not found in the syllabus provided."`
+            : `Instructions: Explain the answer simply and warmly for Rishit using ONLY the excerpts above. Mention the Subject and Chapter. If the question cannot be answered from the provided syllabus excerpts, reply EXACTLY: "This is not found in the syllabus provided."`;
+
         const promptText = `Verified Syllabus Excerpts for Rishit (Standard 5):
 ${sourceText}
 
 Student's Question: "${q}"
 
-Instructions: Explain the answer simply and warmly for Rishit. Mention the Subject and Chapter. If it is NOT in the excerpts, reply EXACTLY: "This is not found in the syllabus provided."`;
+${dynamicInstruction}`;
 
         const payload = {
             contents: [{ role: "user", parts: [{ text: promptText }] }],
             systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
             generationConfig: {
-                temperature: 0.1,
-                maxOutputTokens: 500
+                temperature: 0.15,
+                maxOutputTokens: 800
             }
         };
 
@@ -183,10 +188,10 @@ Instructions: Explain the answer simply and warmly for Rishit. Mention the Subje
         const preferred = options.model ? [options.model] : [];
         const models = [...new Set([
             ...preferred,
-            "gemini-2.5-flash-lite",      // 1. Lite model (Primary, fastest, highest quota)
-            "gemini-flash-lite-latest",   // 2. Next level lite latest
-            "gemini-3.1-flash-lite",      // 3. Next level lite 3.1
-            "gemini-2.5-flash"            // 4. Standard flash fallback
+            "gemini-3.5-flash-lite",      // 1. Google's current Lite model (Fastest, highest quota, active)
+            "gemini-3.5-flash",           // 2. Flash 3.5 fallback
+            "gemini-2.5-flash",           // 3. Flash 2.5 fallback
+            "gemini-flash-lite-latest"    // 4. Lite latest fallback
         ])];
 
         const attemptLogs = [];

@@ -506,8 +506,38 @@ const CurriculumData = (() => {
 
     scored.sort((a, b) => b.score - a.score);
     const duration = Math.round(((typeof performance !== 'undefined') ? performance.now() : Date.now()) - startTime);
-    const finalResults = scored.slice(0, 3);
-    const top = finalResults[0] || null;
+    const top = scored[0] || null;
+
+    // Check if query is asking for chapter-level overview, topics, or questions
+    const isChapterQuery = /(topic|topics|question|questions|summary|overview|all|exercise|exercises|puzzles)/i.test(q);
+    let finalResults = [];
+
+    if (top && isChapterQuery && top.file && pagesToSearch.length > 0) {
+      // Retrieve full breadth of the matched chapter (up to 12 pages)
+      const isQuestionSpecific = /(question|questions|exercise|exercises|problem|problems|puzzle|puzzles|fill in)/i.test(q);
+      const chapterPages = pagesToSearch.filter(p => p.file === top.file);
+
+      let selectedPages = [];
+      if (isQuestionSpecific) {
+        const qPages = chapterPages.filter(p => /(question|fill in|find|calculate|how many|puzzle|discuss|solve|let us|write|count)/i.test(p.text || ''));
+        selectedPages = qPages.length >= 3 ? qPages.slice(0, 12) : chapterPages.slice(0, 12);
+      } else {
+        selectedPages = chapterPages.slice(0, 12);
+      }
+
+      finalResults = selectedPages.map(p => ({
+        score: top.score,
+        subject: p.subject,
+        chapter: p.chapter_title,
+        file: p.file,
+        folder: p.folder,
+        page: p.page,
+        summary: `Subject: ${p.subject} | Chapter: ${p.chapter_title} (Page ${p.page})\n${(p.text || '').slice(0, 500)}`
+      }));
+      finalResults.isChapterOverview = true;
+    } else {
+      finalResults = scored.slice(0, 3);
+    }
 
     finalResults.surfingMeta = {
       pagesScanned: pagesToSearch.length || SYLLABUS.length,
